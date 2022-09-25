@@ -3,7 +3,12 @@
 // offset初始日期偏移量/日期
 // options扩展的定制化功能
 
-const DEFAULT_FORTMAT = 'yyyy-mm-dd'
+const DEFAULT_FORTMAT = 'yyyy-mm-dd';
+const UNIT_TYPE = {
+    'm': 'Month',
+    'd': 'Day',
+    'y': 'FullYear'
+}
 class EasyDate {
     constructor(offset, options) {
         let date = EasyDate.isDate(offset);
@@ -162,6 +167,39 @@ class EasyDate {
             empty: this.getFirstDayOfThisMonth(),
             days: EasyDate.getDates(this.base, today, start, end, this.format)
         }
+    }
+
+
+    transDate(offset) {
+        offset = EasyDate.parse(offset);
+        if (!offset) {
+            return false;
+        }
+
+
+        for (let key in offset) {
+            if (offset.hasOwnProperty(key)) {
+                let type = UNIT_TYPE[key];
+                this.base[`set${type}`](this.base[`get${type}`]() + offset[key])
+            }
+        }
+    }
+
+    //  "+1M","+1D,"+8d","-10m"
+    static parse(offset) {
+        if (!offset) {
+            return false
+        }
+
+        offset = offset.toLowerCase();
+
+        let result = {};
+
+        offset.replace(/([+-]?\d+)(ymd)/g, (m, number, unit) => {
+            result[unit] = Number(num)
+        });
+
+        return result;
     }
 
 }
